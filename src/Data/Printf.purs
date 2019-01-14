@@ -31,6 +31,18 @@ instance formatFConsS ::
   formatF _ str
     = \s -> formatF (FProxy :: FProxy rest) (str <> s)
 
+instance formatFConsB ::
+  FormatF rest fun
+  => FormatF (FCons B rest) (Boolean -> fun) where
+  formatF _ str
+    = \s -> formatF (FProxy :: FProxy rest) (str <> show s)
+
+instance formatFConsF ::
+  FormatF rest fun
+  => FormatF (FCons F rest) (Number -> fun) where
+  formatF _ str
+    = \s -> formatF (FProxy :: FProxy rest) (str <> show s)
+
 instance formatFConsLit ::
   ( IsSymbol lit
   , FormatF rest fun
@@ -66,9 +78,13 @@ else instance cMatchFmt ::
 class MatchFmt (head :: Symbol) (out :: Specifier) | head -> out
 instance matchFmtD :: MatchFmt "d" D
 instance matchFmtS :: MatchFmt "s" S
+instance matchFmtB :: MatchFmt "b" B
+instance matchFmtF :: MatchFmt "f" F
 
 -- TODO: add more of these...
 foreign import kind Specifier
 foreign import data D :: Specifier
 foreign import data S :: Specifier
+foreign import data B :: Specifier
+foreign import data F :: Specifier
 foreign import data Lit :: Symbol -> Specifier
